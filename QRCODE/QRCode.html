@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" href="style.css" /> -->
+    <title>QR Code Generator</title>
+    <style>
+  
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #444;
+}
+
+.box {
+    background-color: white;
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.qr-header {
+    margin-bottom: 20px;
+}
+
+.qr-header input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.qr-header label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.qr-header .select-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qr-header select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.qr-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 150px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #888;
+}
+
+.qr-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.qr-footer input[type="button"],
+.qr-footer a {
+    padding: 10px;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.qr-footer input[type="button"] {
+    background-color: #5cb85c;
+}
+
+.qr-footer input[type="button"]:hover {
+    background-color: #4cae4c;
+}
+
+.qr-footer a {
+    background-color: #3498db;
+}
+
+.qr-footer a:hover {
+    background-color: #2980b9;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="qr-header">
+        <h1>Generate QR Code</h1>
+        <input type="text" placeholder="Type your text or URL" id="qr-text" />
+        <div>
+          <label for="sizes">Select Size:</label>
+          <select id="sizes">
+            <option value="100">100x100</option>
+            <option value="200">200x200</option>
+            <option value="300">300x300</option>
+          </select>
+        </div>
+      </div>
+      <div class="qr-body"></div>
+      <div class="qr-footer">
+        <a href="" id="generateBtn">Generate</a>
+        <a href="" id="downloadBtn" download="QR_Code.png">Download</a>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+      const qrText = document.getElementById("qr-text");
+      const sizes = document.getElementById("sizes");
+      const generateBtn = document.getElementById("generateBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const qrContainer = document.querySelector(".qr-body");
+
+      let size = sizes.value;
+      generateBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        isEmptyInput();
+      });
+
+      sizes.addEventListener("change", (e) => {
+        size = e.target.value;
+        isEmptyInput();
+      });
+
+      downloadBtn.addEventListener("click", () => {
+        let img = document.querySelector(".qr-body img");
+
+        if (img !== null) {
+          let imgAtrr = img.getAttribute("src");
+          downloadBtn.setAttribute("href", imgAtrr);
+        } else {
+          downloadBtn.setAttribute(
+            "href",
+            `${document.querySelector("canvas").toDataURL()}`
+          );
+        }
+      });
+
+      function isEmptyInput() {
+        qrText.value.length > 0
+          ? generateQRCode()
+          : alert("Enter the text or URL to generate your QR code");
+      }
+
+      function generateQRCode() {
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+          text: qrText.value,
+          height: size,
+          width: size,
+          colorLight: "#fff",
+          colorDark: "#000",
+        });
+      }
+    </script>
+  </body>
+</html>
